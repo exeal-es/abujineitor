@@ -50,6 +50,17 @@ public class InjectorShould
 
         Assert.IsType<TestService>(returnedInstance);
     }
+    
+    [Fact]
+    public void ReturnSameInstanceWhenRequestingTheSameServiceTwice()
+    {
+        injector.Register<TestService>();
+
+        var firstInstance = injector.GetService<TestService>();
+        var secondInstance = injector.GetService<TestService>();
+
+        Assert.Same(firstInstance, secondInstance);
+    }
 }
 
 public class AnotherTestService
