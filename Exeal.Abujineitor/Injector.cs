@@ -29,7 +29,12 @@ public class Injector
         var type = typeof(T);
 
         var constructorInfos = type.GetConstructors();
-        if (constructorInfos.First().GetParameters().Length == 2)
+        if (constructorInfos.First().GetParameters().Length == 0)
+        {
+            var instance = Activator.CreateInstance<T>();
+            Register(instance);
+        }
+        else
         {
             var parameters = new List<object>();
 
@@ -39,21 +44,8 @@ public class Injector
                 var dependency = GetService(parameterType);
                 parameters.Add(dependency);
             }
-            
+        
             var instance = (T)Activator.CreateInstance(type, parameters.ToArray());
-            Register(instance);
-        }
-        else if (constructorInfos.First().GetParameters().Length == 1)
-        {
-            var parameterInfo = constructorInfos.First().GetParameters().First();
-            var parameterType = parameterInfo.ParameterType;
-            var dependency = GetService(parameterType);
-            var instance = (T)Activator.CreateInstance(type, new object[] { dependency });
-            Register(instance);
-        }
-        else
-        {
-            var instance = Activator.CreateInstance<T>();
             Register(instance);
         }
     }
