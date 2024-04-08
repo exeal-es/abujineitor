@@ -74,6 +74,38 @@ public class InjectorShould
         Assert.IsType<ServiceWithDependency>(serviceWithDependency);
         Assert.Same(dependency, serviceWithDependency.Dependency);
     }
+    
+    [Fact]
+    public void CanResolveServiceWithTwoDependencies()
+    {
+        injector.Register<Dependency>();
+        injector.Register<AnotherDependency>();
+        injector.Register<ServiceWithTwoDependencies>();
+
+        var firstDependency = injector.GetService<Dependency>();
+        var secondDependency = injector.GetService<AnotherDependency>();
+        var serviceWithDependencies = injector.GetService<ServiceWithTwoDependencies>();
+
+        Assert.IsType<ServiceWithTwoDependencies>(serviceWithDependencies);
+        Assert.Same(firstDependency, serviceWithDependencies.FirstDependency);
+        Assert.Same(secondDependency, serviceWithDependencies.SecondDependency);
+    }
+}
+
+public class ServiceWithTwoDependencies
+{
+    public Dependency FirstDependency { get; }
+    public AnotherDependency SecondDependency { get; }
+    
+    public ServiceWithTwoDependencies(Dependency firstDependency, AnotherDependency secondDependency)
+    {
+        FirstDependency = firstDependency;
+        SecondDependency = secondDependency;
+    }
+}
+
+public class AnotherDependency
+{
 }
 
 public class ServiceWithDependency
