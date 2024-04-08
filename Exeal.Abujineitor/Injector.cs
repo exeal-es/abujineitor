@@ -2,18 +2,21 @@
 
 public class Injector
 {
-    private object instance;
+    private Dictionary<Type, object> instances = new();
 
     public void Register<T>(T instance) where T : class
     {
-        this.instance = instance;
+        this.instances[typeof(T)] = instance;
     }
 
     public T GetService<T>() where T : class
     {
-        if (instance == null)
+        var type = typeof(T);
+        if (!instances.ContainsKey(type))
+        {
             throw new InjectorException();
-        
-        return instance as T;
+        }
+
+        return this.instances[type] as T;
     }
 }
