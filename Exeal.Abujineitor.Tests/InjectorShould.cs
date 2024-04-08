@@ -40,6 +40,16 @@ public class InjectorShould
 
         Assert.Same(returnedInstance, testInstance);
     }
+    
+    [Fact]
+    public void RegisterAType()
+    {
+        injector.Register<TestService>();
+
+        var returnedInstance = injector.GetService<TestService>();
+
+        Assert.IsType<TestService>(returnedInstance);
+    }
 }
 
 public class AnotherTestService

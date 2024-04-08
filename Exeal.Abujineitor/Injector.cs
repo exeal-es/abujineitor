@@ -19,4 +19,10 @@ public class Injector
 
         return this.instances[type] as T;
     }
+
+    public void Register<T>() where T : class
+    {
+        var instance = Activator.CreateInstance<T>();
+        Register(instance);
+    }
 }
