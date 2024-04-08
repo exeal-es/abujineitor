@@ -31,17 +31,15 @@ public class Injector
         var constructorInfos = type.GetConstructors();
         if (constructorInfos.First().GetParameters().Length == 2)
         {
-            var firstParameterInfo = constructorInfos.First().GetParameters().First();
-            var secondParameterInfo = constructorInfos.First().GetParameters().Last();
+            var parameters = new List<object>();
 
-            var firstParameterType = firstParameterInfo.ParameterType;
-            var secondParameterType = secondParameterInfo.ParameterType;
-
-            var firstDependency = GetService(firstParameterType);
-            var secondDependency = GetService(secondParameterType);
-            List<object> parameters = new List<object>();
-            parameters.Add(firstDependency);
-            parameters.Add(secondDependency);
+            foreach (var parameterInfo in constructorInfos.First().GetParameters())
+            {
+                var parameterType = parameterInfo.ParameterType;
+                var dependency = GetService(parameterType);
+                parameters.Add(dependency);
+            }
+            
             var instance = (T)Activator.CreateInstance(type, parameters.ToArray());
             Register(instance);
         }
