@@ -12,6 +12,8 @@ Cuando te pida ese tipo, me fabricas y devuelves una instancia
 
 3. Registrar un tipo que tiene una dependencia
 Cuando te pida ese tipo, tienes que fabricar todo el arbol de dependencias
+3.a. El arbol de dependencias tenga mayor profundidad que 2
+3.b. Que haya multiples constructores
 
 4. Bindear una interfaz a un tipo concreto
 Cuando te pida la interfaz, me devuelves el tipo concreto
