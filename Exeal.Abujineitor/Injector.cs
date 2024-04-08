@@ -29,24 +29,16 @@ public class Injector
         var type = typeof(T);
 
         var constructorInfos = type.GetConstructors();
-        if (constructorInfos.First().GetParameters().Length == 0)
-        {
-            var instance = Activator.CreateInstance<T>();
-            Register(instance);
-        }
-        else
-        {
-            var parameters = new List<object>();
+        var parameters = new List<object>();
 
-            foreach (var parameterInfo in constructorInfos.First().GetParameters())
-            {
-                var parameterType = parameterInfo.ParameterType;
-                var dependency = GetService(parameterType);
-                parameters.Add(dependency);
-            }
-        
-            var instance = (T)Activator.CreateInstance(type, parameters.ToArray());
-            Register(instance);
+        foreach (var parameterInfo in constructorInfos.First().GetParameters())
+        {
+            var parameterType = parameterInfo.ParameterType;
+            var dependency = GetService(parameterType);
+            parameters.Add(dependency);
         }
+        
+        var instance = (T)Activator.CreateInstance(type, parameters.ToArray());
+        Register(instance);
     }
 }
