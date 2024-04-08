@@ -11,6 +11,9 @@ public class Injector
 
     public T GetService<T>() where T : class
     {
+        if (instance == null)
+            throw new InjectorException();
+        
         return instance as T;
     }
 }

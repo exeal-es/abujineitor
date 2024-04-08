@@ -16,6 +16,19 @@ public class InjectorShould
         // Assert
         Assert.Same(returnedInstance, registeredInstance);
     }
+    
+    [Fact]
+    public void FailWhenAttemptingToGetNotRegisteredType()
+    {
+        // Arrange
+        Injector injector = new Injector();
+
+        // Act
+        Action action = () => injector.GetService<TestService>();
+
+        // Assert
+        Assert.Throws<InjectorException>(action);
+    }
 }
 
 public class TestService
