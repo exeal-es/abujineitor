@@ -8,7 +8,7 @@ public class Injector
     {
         this.instances[typeof(T)] = instance;
     }
-    
+
     private object GetService(Type type)
     {
         if (!instances.ContainsKey(type))
@@ -39,7 +39,10 @@ public class Injector
 
             var firstDependency = GetService(firstParameterType);
             var secondDependency = GetService(secondParameterType);
-            var instance = (T)Activator.CreateInstance(type, new object[]{firstDependency, secondDependency});
+            List<object> parameters = new List<object>();
+            parameters.Add(firstDependency);
+            parameters.Add(secondDependency);
+            var instance = (T)Activator.CreateInstance(type, parameters.ToArray());
             Register(instance);
         }
         else if (constructorInfos.First().GetParameters().Length == 1)
@@ -47,13 +50,13 @@ public class Injector
             var parameterInfo = constructorInfos.First().GetParameters().First();
             var parameterType = parameterInfo.ParameterType;
             var dependency = GetService(parameterType);
-            var instance = (T)Activator.CreateInstance(type, new object[]{dependency});
+            var instance = (T)Activator.CreateInstance(type, new object[] { dependency });
             Register(instance);
         }
         else
         {
             var instance = Activator.CreateInstance<T>();
-            Register(instance);            
+            Register(instance);
         }
     }
 }
