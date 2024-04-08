@@ -8,21 +8,39 @@ public class Injector
     {
         this.instances[typeof(T)] = instance;
     }
-
-    public T GetService<T>() where T : class
+    
+    private object GetService(Type type)
     {
-        var type = typeof(T);
         if (!instances.ContainsKey(type))
         {
             throw new InjectorException();
         }
 
-        return this.instances[type] as T;
+        return this.instances[type];
+    }
+
+    public T GetService<T>() where T : class
+    {
+        return (T)GetService(typeof(T));
     }
 
     public void Register<T>() where T : class
     {
-        var instance = Activator.CreateInstance<T>();
-        Register(instance);
+        var type = typeof(T);
+
+        var constructorInfos = type.GetConstructors();
+        if (constructorInfos.First().GetParameters().Length == 1)
+        {
+            var parameterInfo = constructorInfos.First().GetParameters().First();
+            var parameterType = parameterInfo.ParameterType;
+            var dependency = GetService(parameterType);
+            var instance = (T)Activator.CreateInstance(type, new object[]{dependency});
+            Register(instance);
+        }
+        else
+        {
+            var instance = Activator.CreateInstance<T>();
+            Register(instance);            
+        }
     }
 }

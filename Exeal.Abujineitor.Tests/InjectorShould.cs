@@ -61,6 +61,33 @@ public class InjectorShould
 
         Assert.Same(firstInstance, secondInstance);
     }
+    
+    [Fact]
+    public void CanResolveServiceWithADependency()
+    {
+        injector.Register<Dependency>();
+        injector.Register<ServiceWithDependency>();
+
+        var dependency = injector.GetService<Dependency>();
+        var serviceWithDependency = injector.GetService<ServiceWithDependency>();
+
+        Assert.IsType<ServiceWithDependency>(serviceWithDependency);
+        Assert.Same(dependency, serviceWithDependency.Dependency);
+    }
+}
+
+public class ServiceWithDependency
+{
+    public Dependency Dependency { get; }
+    
+    public ServiceWithDependency(Dependency dependency)
+    {
+        Dependency = dependency;
+    }
+}
+
+public class Dependency
+{
 }
 
 public class AnotherTestService
